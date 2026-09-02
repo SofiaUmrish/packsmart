@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PackingCategory } from "@/types";
 import PackingCategoryElem from "@/components/PackingCategoryElem";
 import { Plus } from "lucide-react";
+import PackingScore from '@/components/PackingScoreElem';
 
 interface PackingListProps {
     initialCategories: PackingCategory[];
@@ -143,6 +144,8 @@ export default function PackingList({ initialCategories }: PackingListProps) {
                    />
                 ))}
             </div>
+
+            <PackingScore categories = {categories}/>
         </div>
     );
 }
