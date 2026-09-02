@@ -1,8 +1,11 @@
 'use client'
 import { useState } from "react"
 import { TripData } from "@/types";
-import {getWeatherData} from "@/utils/weatherApi";
+import {getWeatherData, getForecastData} from "@/utils/weatherApi";
 import LoadingScreen from "@/components/LoadingScreen";
+
+import { useRouter } from "next/navigation";
+
 
 export default function TripForm() {
     const radioLabel = {
@@ -25,6 +28,9 @@ export default function TripForm() {
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
+    const router = useRouter();
+
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -42,6 +48,22 @@ export default function TripForm() {
 
     const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
+
+        const redirectToResults = (temperature: number, condition: string, description:string, icon:string) => {
+            const params = new URLSearchParams({
+                city: formData.destination,
+                start: formData.startDate,
+                end: formData.endDate,
+                tripType: formData.tripType,
+                style: formData.style,
+                temperature: temperature.toString(),
+                condition: condition,
+                description: description,
+                icon: icon
+            });
+        
+            router.push(`/result?${params.toString()}`);
+        };
 
         setError("")
 
@@ -61,19 +83,48 @@ export default function TripForm() {
             return
         }
 
-        try {
-            setIsLoading(true);
-            const weather = await getWeatherData(formData.destination);
-            console.log("Weather fetched successfully:", weather);
-            
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError("Something went wrong.");
+        const fiveDaysInMs = 5 * 24 * 60 * 60 * 1000;
+
+        if(start.getTime() - today.getTime() <= fiveDaysInMs){
+           
+            try {
+                setIsLoading(true);
+
+                const formatDate = (date: Date) => date.toISOString().split("T")[0];
+
+                const forecast = await getForecastData(formData.destination, formatDate(start), formatDate(end));
+                console.log("Weather forecast fetched successfully:", forecast);
+
+                redirectToResults(forecast.temperature, forecast.condition, forecast.description, forecast.icon);
+                
+            } catch (err: unknown) {
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError("Something went wrong.");
+                }
+            } finally {
+                setIsLoading(false);
             }
-        } finally {
-            setIsLoading(false);
+
+        }else {
+
+            try {
+                setIsLoading(true);
+                const weather = await getWeatherData(formData.destination);
+                console.log("Weather fetched successfully:", weather);
+
+                redirectToResults(weather.temperature, weather.condition, weather.description, weather.icon);
+                
+            } catch (err: unknown) {
+                if (err instanceof Error) {
+                    setError(err.message);
+                } else {
+                    setError("Something went wrong.");
+                }
+            } finally {
+                setIsLoading(false);
+            }
         }
     }
 
