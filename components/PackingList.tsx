@@ -11,7 +11,12 @@ interface PackingListProps {
 }
 
 export default function PackingList({ initialCategories }: PackingListProps) {
+    
+    const [initialList] = useState<PackingCategory[]>(initialCategories);
+
     const [categories, setCategories] = useState<PackingCategory[]>(initialCategories);
+
+    
     
     const [isAdding, setIsAdding] = useState(false);
     const [newItemName, setNewItemName] = useState("");
@@ -145,7 +150,7 @@ export default function PackingList({ initialCategories }: PackingListProps) {
                 ))}
             </div>
 
-            <PackingScore categories = {categories}/>
+            <PackingScore initialCategories={initialList} currentCategories = {categories}/>
         </div>
     );
 }
