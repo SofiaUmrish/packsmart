@@ -13,11 +13,20 @@ export interface WeatherData {
     icon: string;
 }
 
+export type OutfitItemType = 
+  | "top" 
+  | "bottom" 
+  | "dress" 
+  | "outerwear" 
+  | "shoes" 
+  | "accessory";
+
 export interface PackingItem {
     id: string;
     name: string;
     quantity: number;
     category: "clothing" | "shoes" | "essentials" | "specific";
+    outfitType?: OutfitItemType;
     required: boolean;
     packed: boolean;
 }
@@ -30,7 +39,6 @@ export interface Outfit {
     id: string;
     name: string;
     items: PackingItem[];
-    description?: string;
 }
 export interface SavedTrip extends TripData{
     id: string;

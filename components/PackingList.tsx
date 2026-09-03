@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from "react";
-import { PackingCategory } from "@/types";
+import { PackingCategory, OutfitItemType } from "@/types";
 import PackingCategoryElem from "@/components/PackingCategoryElem";
 import { Plus } from "lucide-react";
 import PackingScore from '@/components/PackingScoreElem';
+import OutfitGenerator from '@/components/OutfitGenerator';
+
 
 interface PackingListProps {
     initialCategories: PackingCategory[];
@@ -13,15 +15,13 @@ interface PackingListProps {
 export default function PackingList({ initialCategories }: PackingListProps) {
     
     const [initialList] = useState<PackingCategory[]>(initialCategories);
-
     const [categories, setCategories] = useState<PackingCategory[]>(initialCategories);
-
-    
     
     const [isAdding, setIsAdding] = useState(false);
     const [newItemName, setNewItemName] = useState("");
     const [newItemQuantity, setNewItemQuantity] = useState(1);
     const [selectedCategoryName, setSelectedCategoryName] = useState(categories[0]?.name || "");
+    const [newItemOutfitType, setNewItemOutfitType] = useState<OutfitItemType | "">("");
 
     const handleTogglePacked = (id: string) => {
         setCategories((prevCategory)=>
@@ -57,9 +57,7 @@ export default function PackingList({ initialCategories }: PackingListProps) {
         if (!newItemName.trim()) return;
 
         setCategories((prevCategory) =>
-            
             prevCategory.map(category => 
-
                 category.name === selectedCategoryName 
                     ? { ...category, items: [...category.items, 
                         {
@@ -67,6 +65,7 @@ export default function PackingList({ initialCategories }: PackingListProps) {
                             name: newItemName,
                             quantity: newItemQuantity,
                             category: selectedCategoryName.toLowerCase() as any,
+                            outfitType: newItemOutfitType === "" ? undefined : newItemOutfitType,
                             required: true,
                             packed: false,
                         }
@@ -77,6 +76,7 @@ export default function PackingList({ initialCategories }: PackingListProps) {
         
         setNewItemName("");
         setNewItemQuantity(1);
+        setNewItemOutfitType("");
         setIsAdding(false);
     };
 
@@ -98,35 +98,51 @@ export default function PackingList({ initialCategories }: PackingListProps) {
                 <form onSubmit={handleAddItem} className="bg-white p-5 rounded-2xl border border-charcoal/10 shadow-sm flex flex-col gap-4 animate-fadeIn">
                     <h3 className="font-semibold text-charcoal">Add Custom Item</h3>
                     
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="flex flex-col gap-3">
                         <input
                             type="text"
-                            placeholder="Item name (e.g. Camera)"
+                            placeholder="Item name (e.g. Cardigan)"
                             value={newItemName}
                             onChange={(e) => setNewItemName(e.target.value)}
-                            className="px-4 py-2 rounded-xl border border-charcoal/20 focus:outline-none focus:border-sage text-charcoal"
+                            className="px-4 py-2 rounded-xl border border-charcoal/20 focus:outline-none focus:border-sage text-charcoal w-full"
                             required
                         />
                         
-                        <input
-                            type="number"
-                            min="1"
-                            value={newItemQuantity}
-                            onChange={(e) => setNewItemQuantity(Number(e.target.value))}
-                            className="px-4 py-2 rounded-xl border border-charcoal/20 focus:outline-none focus:border-sage text-charcoal"
-                        />
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <input
+                                type="number"
+                                min="1"
+                                value={newItemQuantity}
+                                onChange={(e) => setNewItemQuantity(Number(e.target.value))}
+                                className="px-4 py-2 rounded-xl border border-charcoal/20 focus:outline-none focus:border-sage text-charcoal"
+                            />
 
-                        <select
-                            value={selectedCategoryName}
-                            onChange={(e) => setSelectedCategoryName(e.target.value)}
-                            className="px-4 py-2 rounded-xl border border-charcoal/20 focus:outline-none focus:border-sage text-charcoal bg-white"
-                        >
-                            {categories.map(category =>
-                                <option key={category.id} value={category.name}>
-                                    {category.name}
-                                </option>
-                            )}
-                        </select>
+                            <select
+                                value={selectedCategoryName}
+                                onChange={(e) => setSelectedCategoryName(e.target.value)}
+                                className="px-4 py-2 rounded-xl border border-charcoal/20 focus:outline-none focus:border-sage text-charcoal bg-white"
+                            >
+                                {categories.map(category =>
+                                    <option key={category.id} value={category.name}>
+                                        {category.name}
+                                    </option>
+                                )}
+                            </select>
+
+                            <select
+                                value={newItemOutfitType}
+                                onChange={(e) => setNewItemOutfitType(e.target.value as OutfitItemType | "")}
+                                className="px-4 py-2 rounded-xl border border-charcoal/20 focus:outline-none focus:border-sage text-charcoal bg-white"
+                            >
+                                <option value="">Not for outfits</option>
+                                <option value="top">Outfit: Top</option>
+                                <option value="bottom">Outfit: Bottom</option>
+                                <option value="dress">Outfit: Dress</option>
+                                <option value="outerwear">Outfit: Outerwear</option>
+                                <option value="shoes">Outfit: Shoes</option>
+                                <option value="accessory">Outfit: Accessory</option>
+                            </select>
+                        </div>
                     </div>
 
                     <button
@@ -151,6 +167,7 @@ export default function PackingList({ initialCategories }: PackingListProps) {
             </div>
 
             <PackingScore initialCategories={initialList} currentCategories = {categories}/>
+            <OutfitGenerator categories = {categories} />
         </div>
     );
 }
