@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import { generatePackingList } from "@/utils/packingCalculator";
 import WeatherCard from "@/components/WeatherCard";
 import PackingList from '@/components/PackingList';
+import InspirationGallery from '@/components/InspirationGallery';
 
 interface ResultsPageProps {
     searchParams: Promise<{
@@ -72,6 +73,14 @@ export default async function ResultsPage({
 
                 <WeatherCard {...weatherData} />
                 <PackingList initialCategories = {packingCategories} />
+
+                <InspirationGallery 
+                    destination = {params.city}
+                    tripType={params.tripType} 
+                    style={params.style}
+                    temperature={Number(params.temperature)}
+                    condition={params.condition}
+                />
 
             </div>
         </main>
