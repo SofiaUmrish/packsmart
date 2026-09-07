@@ -45,7 +45,7 @@ Depending on the temperature and conditions, PackSmart can suggest items such as
 * shorts
 * sandals
 * waterproof shoes
-* sunscreeen
+* sunscreen
 * hats and gloves
 
 This allows the packing list to adapt to different weather conditions instead of using a fixed checklist.
@@ -61,7 +61,7 @@ Outfits are assembled from available:
 * dresses
 * outerwear
 * shoes
-* accessory
+* accessories
 
 The generated outfits can then be viewed directly on the trip results page.
 
@@ -200,10 +200,14 @@ npm install
 Create a `.env.local` file in the root directory and add the required API configuration:
 
 ```env
-WEATHER_API_KEY=your_api_key
+NEXT_PUBLIC_WEATHER_API_KEY=your_weather_api_key
+UNSPLASH_ACCESS_KEY=your_unsplash_access_key
+
 ```
 
-Use the variable name required by your weather API implementation.
+The weather API key is used for retrieving weather data for the selected destination.
+
+The Unsplash access key is used server-side to fetch travel inspiration images for the Inspiration Gallery.
 
 ### Run the Development Server
 
@@ -232,13 +236,28 @@ https://packsmart-flax.vercel.app/
 
 ## Screenshots
 
-Screenshots can be added here to showcase:
+### Landing Page
 
-* Landing page
-* Trip planner
-* Generated packing list
-* Outfit suggestions
-* Saved trips
+![PackSmart Landing Page](./screenshots/landing-page.png)
+
+### Trip Planner
+
+![Trip Planner](./screenshots/trip-planner-1.png)
+![Trip Planner](./screenshots/trip-planner-2.png)
+
+### Generated Packing List
+
+![Generated Packing List](./screenshots/packing-list-1.png)
+![Generated Packing List](./screenshots/packing-list-2.png)
+![Generated Packing List](./screenshots/packing-list-3.png)
+
+### Outfit Ideas / Inspiration Gallery
+
+![Outfit Ideas / Inspiration Gallery](./screenshots/outfit-suggestions.png)
+
+### Saved Trips
+
+![Saved Trips](./screenshots/saved-trips.png)
 
 ---
 
