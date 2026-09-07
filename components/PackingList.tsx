@@ -1,22 +1,35 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PackingCategory, OutfitItemType } from "@/types";
 import PackingCategoryElem from "@/components/PackingCategoryElem";
 import { Plus } from "lucide-react";
 import PackingScore from '@/components/PackingScoreElem';
 import OutfitGenerator from '@/components/OutfitGenerator';
 
-
 interface PackingListProps {
     initialCategories: PackingCategory[];
+    onCategoriesChange?: (categories: PackingCategory[]) => void;
 }
 
-export default function PackingList({ initialCategories }: PackingListProps) {
-    
+export default function PackingList({ initialCategories, onCategoriesChange }: PackingListProps) {
     const [initialList] = useState<PackingCategory[]>(initialCategories);
     const [categories, setCategories] = useState<PackingCategory[]>(initialCategories);
     
+     useEffect(() => {
+        setCategories(initialCategories);
+    }, [initialCategories]);
+
+    useEffect(() => {
+        onCategoriesChange?.(categories);
+    }, [categories, onCategoriesChange]);
+
+    const updateCategories = (
+        updater: (prev: PackingCategory[]) => PackingCategory[]
+    ) => {
+        setCategories((prev) => updater(prev));
+    };
+
     const [isAdding, setIsAdding] = useState(false);
     const [newItemName, setNewItemName] = useState("");
     const [newItemQuantity, setNewItemQuantity] = useState(1);
@@ -24,39 +37,39 @@ export default function PackingList({ initialCategories }: PackingListProps) {
     const [newItemOutfitType, setNewItemOutfitType] = useState<OutfitItemType | "">("");
 
     const handleTogglePacked = (id: string) => {
-        setCategories((prevCategory)=>
+        updateCategories((prevCategory) =>
             prevCategory.map(category => ({
                 ...category,
                 items: category.items.map(item =>
-                    item.id===id ? {...item, packed: !item.packed} : item)
+                    item.id === id ? {...item, packed: !item.packed} : item)
             }))
-        )
+        );
     };
 
     const handleUpdateQuantity = (id: string, newQuantity: number) => {
-        setCategories((prevCategory) =>
+        updateCategories((prevCategory) =>
             prevCategory.map(category => ({
                 ...category,
                 items: category.items.map(item =>
-                    item.id === id ?  {...item, quantity: newQuantity} : item)
+                    item.id === id ? {...item, quantity: newQuantity} : item)
             }))
-        )
+        );
     };
 
     const handleDeleteItem = (id: string) => {
-        setCategories((prevCategory) =>
+        updateCategories((prevCategory) =>
             prevCategory.map(category => ({
                 ...category,
                 items: category.items.filter(item => item.id !== id)
             }))
-        )
+        );
     };
 
-    const handleAddItem = (e: React.SubmitEvent) =>{
+    const handleAddItem = (e: React.FormEvent) => {
         e.preventDefault();
         if (!newItemName.trim()) return;
 
-        setCategories((prevCategory) =>
+        updateCategories((prevCategory) =>
             prevCategory.map(category => 
                 category.name === selectedCategoryName 
                     ? { ...category, items: [...category.items, 
@@ -72,7 +85,7 @@ export default function PackingList({ initialCategories }: PackingListProps) {
                     ]}
                     : category
             )
-        )
+        );
         
         setNewItemName("");
         setNewItemQuantity(1);
@@ -166,8 +179,8 @@ export default function PackingList({ initialCategories }: PackingListProps) {
                 ))}
             </div>
 
-            <PackingScore initialCategories={initialList} currentCategories = {categories}/>
-            <OutfitGenerator categories = {categories} />
+            <PackingScore initialCategories={initialList} currentCategories={categories} />
+            <OutfitGenerator categories={categories} />
         </div>
     );
 }

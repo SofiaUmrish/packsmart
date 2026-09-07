@@ -3,14 +3,28 @@ import Link from 'next/link';
 export default function Header() {
   return (
     <header className="w-full py-6 px-8 flex justify-between items-center border-b border-[#DAD8D2]">
-      <Link href="/" className="font-semibold text-lg tracking-wide text-charcoal">
-        PackSmart
-      </Link>
-      <nav className="flex gap-6 items-center text-sm font-medium">
-        <Link href="/planner" className="text-charcoal hover:text-sage transition-colors">
+      <Link href="/" className="flex items-center gap-2.5 transition-transform hover:scale-105">
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 300 300" 
+                    className="w-7 h-7"
+                >
+                    <path fill="#8A9A86" d="M149.997,0C67.158,0,0.003,67.161,0.003,149.997S67.158,300,149.997,300s150-67.163,150-150.003S232.837,0,149.997,0z"/>
+                    <path fill="#222222" d="M222.978,99.461l-32.435,30.711l20.562,82.844l-12.27,12.27l-39.262-64.028l-0.905-0.905l-40.385,38.24
+                        c-0.228,0.231-0.485,0.405-0.718,0.622l-1.297,29.481l-44.965-44.962l29.471-1.294c0.218-0.239,0.394-0.493,0.625-0.724
+                        l38.24-40.387L139.314,141l-64.601-39.832l12.27-12.27l82.471,20.946l31.079-32.827c6.201-6.201,16.251-6.199,22.447,0
+                        C229.177,83.215,229.177,93.263,222.978,99.461z"/>
+                </svg>
+
+                <span className="text-xl font-bold tracking-tight text-charcoal">
+                    PackSmart
+                </span>
+            </Link>
+      <nav className="flex gap-6 items-center text-md font-medium">
+        <Link href="/planner" className="text-charcoal hover:text-sage hover:scale-105 transition-all">
           Plan a trip
         </Link>
-        <Link href="/trips" className="text-[#737373] hover:text-charcoal transition-colors">
+        <Link href="/trips" className="text-[#737373] hover:text-charcoal hover:scale-105 transition-all">
           My Trips
         </Link>
       </nav>
