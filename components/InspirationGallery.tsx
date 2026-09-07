@@ -92,11 +92,10 @@ export default function InspirationGallery({
               per_page: "4",
               orientation: "portrait",
               content_filter: "high",
-              client_id: process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY || "",
             });
 
             const response = await fetch(
-              `https://api.unsplash.com/search/photos?${params.toString()}`
+              `/api/unsplash?${params.toString()}`
             );
 
             if (!response.ok) {
